@@ -15,7 +15,7 @@
             Mot de passe : <input name="password" type="password" placeholder="Votre mot de passe..."/>
         </label><br>
         <input name="register" type="submit" formaction="register.php" value="Register"/>
-        <input name="login" type="submit" formaction="/action_page2.php" value="Login"/>
+        <input name="login" type="submit" formaction="login.php" value="Login"/>
     </form>
     <form>
         <br>
