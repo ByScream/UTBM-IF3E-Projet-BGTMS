@@ -21,7 +21,7 @@
         <br>
         <br>
         <br>
-        <input name="manage_games" type="submit" formaction="manages_games.php" value="Manage games"/>
+        <input name="manage_games" type="submit" formaction="manage_games.php" value="Manage games"/>
     </form>
 </body>
 </html>
