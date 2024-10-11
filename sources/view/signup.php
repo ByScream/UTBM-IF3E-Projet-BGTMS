@@ -20,6 +20,11 @@
                     <a class="nav-link" href="login.php">Se connecter</a>
                 </li>
             </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <img src="../images/logo_UTBM_blanc.png" width="85" id="logo" alt="TLC Logo" />
+                </li>
+            </ul>
         </div>
     </div>
 </nav>

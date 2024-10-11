@@ -6,7 +6,7 @@ $password = $_POST["password"];
 $db = new PDO("mysql:host=localhost;dbname=IF3E_Projet_B;charset=utf8", "root", "");
 
 // Préparation de la requête
-$req = $db->prepare("SELECT email, password FROM users WHERE email = ?");
+$req = $db->prepare("SELECT email, password, prenom FROM users WHERE email = ?");
 
 // Exécution de la requête paramétrée
 $req->execute([$email]);
@@ -18,12 +18,11 @@ if($data != null && password_verify($password, $data['password'])) {
     // C'est OK, on connecte l'utilisateur
     session_start();
     $_SESSION["email"] = $email;
+    $_SESSION["prenom"] = $data["prenom"];
 
     // On le redirige sur son compte
     header("Location: ../view/account.php");
 } else {
     // Erreur, utilisateur introuvable, on redirige vers le login
-
-    echo "L'utilisateur n'existe pas !";
-    //header("Location: ../view/login.php");
+    header("Location: ../view/login.php");
 }
