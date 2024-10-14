@@ -63,7 +63,7 @@
             <option value="1">Multijoueur</option>
         </select>
         <div class="col-12">
-            <input class="btn btn-primary" type="submit">Créer</input>
+            <button class="btn btn-primary" type="submit">Créer</button>
         </div>
     </form>
 </div>
