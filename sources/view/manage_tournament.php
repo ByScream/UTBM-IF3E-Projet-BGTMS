@@ -76,7 +76,53 @@ $type_tournoi = $data["type"];
 
 
     ?>
-
+    <br><br><br>
+    <?php
+    if ($type_tournoi == 1) { ?>
+        <form method="post" action="../controller/tournament_add_team.php?tournament_id=<?php echo $id_tournoi ?>">
+            <br>
+            <label for="add_teams" class="form-label">Ajouter une équipe au tournoi</label>
+            <select id="add_teams" name="add_teams" class="form-select" required="required">
+                <?php
+                $req = $bdd->prepare("SELECT team_id, team_name FROM teams;");
+                $req->execute();
+                while($data = $req->fetch()) {
+                    ?>
+                    <option value="<?php echo $data["team_id"]?>"><?php echo $data["team_name"]?></option>
+                    <?php
+                }
+                ?>
+            </select>
+            <div class="col-12">
+                <button class="btn btn-primary" type="submit">Ajouter l'équipe</button>
+            </div>
+        </form>
+    <?php } else {?>
+        <form method="post" action="../controller/tournament_add_player.php?tournament_id=<?php echo $id_tournoi ?>">
+            <br>
+            <label for="add_players" class="form-label">Ajouter un joueur au tournoi</label>
+            <select id="add_players" name="add_players" class="form-select" required="required">
+                <?php
+                $req = $bdd->prepare("SELECT id, pseudo FROM users;");
+                $req->execute();
+                while($data = $req->fetch()) {
+                    ?>
+                    <option value="<?php echo $data["id"]?>"><?php echo $data["pseudo"]?></option>
+                    <?php
+                }
+                ?>
+            </select>
+            <div class="col-12">
+                <button class="btn btn-primary" type="submit">Ajouter le joueur</button>
+            </div>
+        </form>
+    <?php }?>
+    <form method="post" action="../view/manage_matchs.php?tournament_id=<?php echo $id_tournoi ?>">
+        <br>
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit">Gérer les matchs</button>
+        </div>
+    </form>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
