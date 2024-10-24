@@ -34,6 +34,9 @@
     <form action='team_page.php'>
         <button class='btn btn-primary' type='submit'>Gérer équipes</button>
     </form>
+    <form action='tournament_page.php'>
+        <button class='btn btn-primary' type='submit'>Voir tournois</button>
+    </form>
     <?php
     if ($_SESSION['is_organizer'] == 1) {
         echo "Comme vous êtes organisateur, vous avez le droit à ces boutons :<br>";
