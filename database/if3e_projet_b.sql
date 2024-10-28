@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 15 oct. 2024 à 19:25
+-- Généré le : lun. 28 oct. 2024 à 10:13
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -63,6 +63,15 @@ CREATE TABLE `match_player` (
   `score_player2` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Déchargement des données de la table `match_player`
+--
+
+INSERT INTO `match_player` (`tournament_id`, `player1`, `player2`, `date`, `time`, `location`, `progress`, `score_player1`, `score_player2`) VALUES
+(8, 12, 13, '2024-10-21', '2024-10-28 08:41:40', 'efrfer', 'En cours', 2, 3),
+(8, 14, 13, '2024-10-21', '2024-10-28 08:54:48', 'ee', 'terminé', 0, 4),
+(8, 12, 14, '2024-10-21', '2024-10-28 08:55:40', '', '', 0, 4);
+
 -- --------------------------------------------------------
 
 --
@@ -80,6 +89,13 @@ CREATE TABLE `match_team` (
   `score_team1` int(11) NOT NULL,
   `score_team2` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `match_team`
+--
+
+INSERT INTO `match_team` (`tournament_id`, `team1`, `team2`, `date`, `time`, `location`, `progress`, `score_team1`, `score_team2`) VALUES
+(7, 8, 9, '0000-00-00', '2024-10-28 09:01:48', 'test', 'Terminé', 0, 2);
 
 -- --------------------------------------------------------
 
@@ -161,7 +177,8 @@ CREATE TABLE `tournaments_teams` (
 --
 
 INSERT INTO `tournaments_teams` (`team`, `tournament_id`) VALUES
-(8, 7);
+(8, 7),
+(9, 7);
 
 -- --------------------------------------------------------
 
@@ -179,8 +196,10 @@ CREATE TABLE `tournament_players` (
 --
 
 INSERT INTO `tournament_players` (`tournament_id`, `player`) VALUES
+(8, 10),
 (8, 12),
-(8, 13);
+(8, 13),
+(8, 14);
 
 -- --------------------------------------------------------
 
