@@ -42,7 +42,41 @@ $type_tournoi = $data["type"];
 </nav>
 <div class="container">
 
-    <h2>Voir le torunoi : <?php echo $name_tournoi ?></h2>
+    <h2>Voir le tournoi : <?php echo $name_tournoi ?></h2>
+    <?php
+    if ($type_tournoi == 1) {
+        $req = $bdd->prepare("SELECT team, teams.team_name FROM tournaments_teams INNER JOIN teams ON team_id = team WHERE tournament_id=?");
+        $req->execute([$id_tournament]);
+        $i = 0;
+        while($data = $req->fetch()) {
+            if ($i == 0) {
+                echo 'Voici les équipes qui font parti de ce tournoi :';
+            }
+            ++$i;
+            echo "<br>- ".$data["team_name"];
+        }
+        if ($i == 0) {
+            echo "Il n'y a aucune équipe dans ce tournoi !";
+        }
+    } else {
+        $req = $bdd->prepare("SELECT player, users.pseudo FROM tournament_players INNER JOIN users ON users.id = player WHERE tournament_id=?");
+        $req->execute([$id_tournament]);
+        $i = 0;
+        while($data = $req->fetch()) {
+            if ($i == 0) {
+                echo 'Voici les joueurs qui font parti de ce tournoi :';
+            }
+            ++$i;
+            echo "<br>- ".$data["pseudo"];
+        }
+        if ($i == 0) {
+            echo "Il n'y a aucun joueur dans ce tournoi !";
+        }
+    }
+
+
+    ?>
+    <br><br>
     Matchs du tournoi :
     <table>
         <tr>
@@ -110,39 +144,63 @@ $type_tournoi = $data["type"];
         <?php
         $bdd = new PDO("mysql:host=localhost;dbname=IF3E_Projet_B;charset=utf8", "root", "");
         if ($type_tournoi==0){
-            $req = $bdd->prepare("SELECT player, COUNT(*) AS nombre_de_victories
+            $req = $bdd->prepare("SELECT 
+    users.pseudo, player,
+    SUM(CASE WHEN score_player1 > score_player2 THEN 1 
+             ELSE 0 END) AS matchs_gagnes,
+    SUM(CASE WHEN score_player1 = score_player2 THEN 1 ELSE 0 END) AS matchs_nuls,
+    SUM(CASE WHEN score_player1 < score_player2 THEN 1 
+             ELSE 0 END) AS matchs_perdus
 FROM (
-    SELECT player1 AS player, score_player1 AS score, score_player2 AS adversaire_score
-    FROM match_player
-    WHERE score_player1 > score_player2
-
+    SELECT player1 AS player, score_player1, score_player2 
+    FROM match_player 
+    WHERE tournament_id = ?
     UNION ALL
-
-    SELECT player2 AS player, score_player2 AS score, score_player1 AS adversaire_score
-    FROM match_player
-    WHERE score_player2 > score_player1
-) AS victoires
+    SELECT player2 AS player, score_player2 AS score_player1, score_player1 AS score_player2 
+    FROM match_player 
+    WHERE tournament_id = ?
+) AS all_matches  INNER JOIN users ON users.id=player
 GROUP BY player
-ORDER BY nombre_de_victories ASC;");
-            $req->execute();
+ORDER BY matchs_gagnes DESC");
+            $req->execute([$id_tournament,$id_tournament]);
             while($data = $req->fetch()) {
                 echo "<tr>";
-                echo "<td>" . $data['player'] . "</td>";
-                echo "<td>" . $data['nombre_de_victories'] . " - " . $data['nombre_de_victories'] . "</td>";;
+                echo "<td>" . $data['pseudo'] . "</td>";
+                echo "<td>" . $data["matchs_gagnes"]+$data["matchs_nuls"]+$data["matchs_perdus"] . "</td>";
+                echo "<td>" . $data['matchs_gagnes'] . "</td>";
+                echo "<td>" . $data['matchs_nuls'] . "</td>";
+                echo "<td>" . $data['matchs_perdus'] . "</td>";
+                echo "<td>" . $data["matchs_gagnes"]*3 + $data["matchs_nuls"] . "</td>";
                 echo "</tr>";
             }
         } else {
-            $req = $bdd->prepare("SELECT team1, T1.team_name AS name_team1, team2, T2.team_name AS name_team2, date, time, location, progress, score_team1, score_team2 FROM match_team INNER JOIN teams T1 ON T1.team_id=match_team.team1 INNER JOIN teams T2 ON T2.team_id=match_team.team2 WHERE tournament_id = ?");
-            $req->execute();
+            $req = $bdd->prepare("SELECT 
+    teams.team_name, team,
+    SUM(CASE WHEN score_team1 > score_team2 THEN 1 
+             ELSE 0 END) AS matchs_gagnes,
+    SUM(CASE WHEN score_team1 = score_team2 THEN 1 ELSE 0 END) AS matchs_nuls,
+    SUM(CASE WHEN score_team1 < score_team2 THEN 1 
+             ELSE 0 END) AS matchs_perdus
+FROM (
+    SELECT team1 AS team, score_team1, score_team2 
+    FROM match_team 
+    WHERE tournament_id = ?
+    UNION ALL
+    SELECT team2 AS team, score_team2 AS score_team1, score_team1 AS score_team2 
+    FROM match_team 
+    WHERE tournament_id = ?
+) AS all_matches  INNER JOIN teams ON teams.team_id=team
+GROUP BY team
+ORDER BY matchs_gagnes DESC");
+            $req->execute([$id_tournament,$id_tournament]);
             while($data = $req->fetch()) {
                 echo "<tr>";
-                echo "<td>" . $data['name_team1'] . "</td>";
-                echo "<td>" . $data['name_team2'] . "</td>";
-                echo "<td>" . $data['date'] . "</td>";
-                echo "<td>" . $data['time'] . "</td>";
-                echo "<td>" . $data['location'] . "</td>";
-                echo "<td>" . $data['progress'] . "</td>";
-                echo "<td>" . $data['score_team1'] . " - " . $data['score_team2'] . "</td>";
+                echo "<td>" . $data['team_name'] . "</td>";
+                echo "<td>" . $data["matchs_gagnes"]+$data["matchs_nuls"]+$data["matchs_perdus"] . "</td>";
+                echo "<td>" . $data['matchs_gagnes'] . "</td>";
+                echo "<td>" . $data['matchs_nuls'] . "</td>";
+                echo "<td>" . $data['matchs_perdus'] . "</td>";
+                echo "<td>" . $data["matchs_gagnes"]*3 + $data["matchs_nuls"] . "</td>";
                 echo "</tr>";
             }
         }
